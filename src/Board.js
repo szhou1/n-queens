@@ -79,11 +79,25 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
+      console.log("HAS ROW CONFLICT at");
       return false; // fixme
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
+      var matrix = this.rows();
+      for(var row=0; row<matrix.length; row++){
+        var has = false;
+        for(var col=0; col<matrix.length; col++){
+          if(matrix[row][col] === 1){
+            if(has){
+              console.log("found row conflict")
+              return true;
+            }
+            has = true;
+          }
+        }
+      }
       return false; // fixme
     },
 
@@ -99,6 +113,19 @@
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
+      var matrix = this.rows();
+      for(var col=0; col<matrix.length; col++){
+        var has = false;
+        for(var row=0; row<matrix.length; row++){
+          if(matrix[row][col] === 1){
+            if(has){
+              return true;
+            }
+            has = true;
+          }
+        }
+      }
+
       return false; // fixme
     },
 
@@ -114,6 +141,23 @@
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
+      var matrix = this.rows();
+      for(var row=0; row<matrix.length; row++){
+        // var has = false;
+        for(var col=0; col<matrix.length; col++){
+          if(matrix[row][col] === 1){
+            var r = row+1;
+            var c = col+1;
+            // var hasConflict = false;
+            while(this._isInBounds(r, c)){
+              if(matrix[r][c] === 1){
+                return true;
+              }
+              r++; c++;
+            }
+          }
+        }
+      }
       return false; // fixme
     },
 
@@ -129,6 +173,23 @@
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
+      var matrix = this.rows();
+      for(var row=0; row<matrix.length; row++){
+        // var has = false;
+        for(var col=0; col<matrix.length; col++){
+          if(matrix[row][col] === 1){
+            var r = row+1;
+            var c = col-1;
+            // var hasConflict = false;
+            while(this._isInBounds(r, c)){
+              if(matrix[r][c] === 1){
+                return true;
+              }
+              r++; c--;
+            }
+          }
+        }
+      }
       return false; // fixme
     }
 
