@@ -12,86 +12,109 @@
 
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
+// window._findAllRooksSolutions = function(n){
+//   var solutionArray = [];
+//   var solutionCount = 0;
+//   console.log("n: " + n)
+//   var r = node();
+//   r.matrix = _rootMatrix(n);
+//   var buildTree = function(board, tuple, depth){
+//       // console.log("depth: " + depth)
+//       // if ( solutionArray.length === n) {
+//       //   return solutionArray
+//       // }
+//       if(!board.hasConflict && _checkForConflicts("rooks", board.matrix) ) {
+//         board.hasConflict = true;
+//         return board;
+//       }
+      
+//       if ( depth === n ) {
+      
+//         // console.log("SOLUTION")
+//         // console.log(JSON.stringify(board.matrix))
+//         var solution = board.matrix;
+//         /*return solution here or board? */
+//         // solutionArray.push(solution);
+//         solutionCount++;
+//         // console.log("# solutions: " + solutionArray.length);
+//         // if(solutionArray.length % 120 === 0){
+//           // console.log(JSON.stringify(solution));
+//         // }
+//         console.log(solutionCount)
+//         return board;
+//       }
+//       while ( tuple ) {
+//           var newBoard = node();
+//           newBoard.matrix = _copyMatrix(board.matrix); // n^2
+//           newBoard.matrix[tuple[0]][tuple[1]] = 1;
+//           tuple = _getNextSpaceOnBoard(n, tuple);
 
-window.node = function() {
-  var instance = {};
-  instance.hasConflict = false;
-  instance.matrix = null;
-  instance.location = null;
-  instance.children = [];
-  return instance;
-}
+//           var child = buildTree(newBoard, tuple, depth + 1);
+//           // console.log(JSON.stringify(child.matrix));
+//           if ( !child.hasConflict ) {
+//             board.children.push(child);
+//           }
+//           if ( !tuple ) {
+//             break;
+//           }
+//         }
+//         return board;
+//       }
+//   buildTree(r, [0,0], 0);
+//   // for(var i = 0; i < n; i++) {
+//   //   for(var j = 0; j < n; j++) {
+//   //     console.log("buildTree: ",i, j)
+//   //     var child = buildTree(r, [i,j], 0);
+//   //     console.log(JSON.stringify(child.matrix));
+//   //   }
+//   // }
+//   // console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
+//   return solutionArray;
+// }
+
 
 window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
+  var solutionMatrix = undefined;
   console.log("n: " + n)
-
-  var rootMatrix = [];
-  for(var i=0; i<n; i++){
-    var row = [];
-    for(var j=0; j<n; j++){
-      row[j] = 0;
-    }
-    rootMatrix[i] = row;
-  }
-  console.log(rootMatrix)
   var r = node();
-  r.matrix = rootMatrix;
-
+  r.matrix = _rootMatrix(n);
   var buildTree = function(board, tuple, depth){
-      console.log("depth: " + depth)
-      if(solution){
+      // console.log("depth: " + depth)
+      if ( solutionMatrix ) {
         return board;
       }
-      // add 1 to tuple location
-      // board.matrix[tuple[0]][tuple[1]] = 1;
-      // console.log(JSON.stringify(board.matrix))
-      // check if it has conflicts
-      if(_checkForConflicts("rooks", board.matrix)){
-          // if has conflicts, return
-        // console.log("HAS CONFLICT");
+      if(!board.hasConflict && _checkForConflicts("rooks", board.matrix) ) {
         board.hasConflict = true;
         return board;
-      } 
-      else if(depth === n){
-        console.log("SOLUTION")
+      }
+      
+      if ( depth === n ) {
+      
         console.log(JSON.stringify(board.matrix))
-        solution = board.matrix;
+        solutionMatrix = board.matrix;
+        /*return solution here or board? */
         return board;
-      } 
-      else {
-        // debugger;
-        while(tuple){
-          // console.log(newLocation)
+      }
+      while ( tuple ) {
           var newBoard = node();
-          newBoard.matrix = _copyMatrix(board.matrix);
-          // console.log()
+          newBoard.matrix = _copyMatrix(board.matrix); // n^2
           newBoard.matrix[tuple[0]][tuple[1]] = 1;
           tuple = _getNextSpaceOnBoard(n, tuple);
 
           var child = buildTree(newBoard, tuple, depth + 1);
-          console.log(JSON.stringify(child.matrix));
-          if(!child.hasConflict){
+          // console.log(JSON.stringify(child.matrix));
+          if ( !child.hasConflict ) {
             board.children.push(child);
           }
-          if(!tuple){
+          if ( !tuple ) {
             break;
           }
         }
+        return board;
       }
-      return board;
-  }
-
-  for(var i = 0; i < n; i++) {
-    for(var j = 0; j < n; j++) {
-      console.log("buildTree: ",i, j)
-      var child = buildTree(r, [i,j], 0);
-      console.log(JSON.stringify(child.matrix));
-    }
-  }
-  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-  return solution;
-}  
+  buildTree(r, [0,0], 0);
+  return solutionMatrix;
+}
 
 window._copyMatrix = function(matrix){
   return matrix.map(function(row){
@@ -102,15 +125,30 @@ window._copyMatrix = function(matrix){
 }
 
 
+window._rootMatrix = function(n) {
+  var rootMatrix = [];
+  for(var i=0; i<n; i++){
+    var row = [];
+    for(var j=0; j<n; j++){
+      row[j] = 0;
+    }
+    rootMatrix[i] = row;
+  }
+  return rootMatrix;
+}
+window.node = function() {
+  var instance = {};
+  instance.hasConflict = false;
+  instance.matrix = null;
+  // instance.location = null;
+  instance.children = [];
+  return instance;
+}
 window._checkForConflicts = function(criteria, board) {
     var hasConflict = false;
-
-        var board = new Board(board);
-
-      var conflictDetected = board["hasAnyRooksConflicts"]();
-    // _.map(criteria.split(' '), function(conflictType) {
-      hasConflict = hasConflict || conflictDetected;
-    // });
+    var board = new Board(board);
+    var conflictDetected = board["hasAnyRooksConflicts"]();
+    hasConflict = hasConflict || conflictDetected;
 
     return hasConflict; 
 }
@@ -132,8 +170,46 @@ window._getNextSpaceOnBoard = function(n, tuple) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0; //fixme
 
+  console.log("n: " + n)
+  var r = node();
+  r.matrix = _rootMatrix(n);
+  var buildTree = function(board, tuple, depth){
+      // console.log("depth: " + depth)
+      if(depth > 1 && !board.hasConflict && _checkForConflicts("rooks", board.matrix) ) {
+        board.hasConflict = true;
+        return board;
+      }
+      
+      if ( depth === n ) {      
+        solutionMatrix = board.matrix;
+        /*return solution here or board? */
+        solutionCount++;
+        console.log(solutionCount)
+        // if(solutionCount % 120 === 0){
+          // debugger;
+        // }
+        return board;
+      }
+      while ( tuple ) {
+          var newBoard = node();
+          newBoard.matrix = _copyMatrix(board.matrix); // n^2
+          newBoard.matrix[tuple[0]][tuple[1]] = 1;
+          tuple = _getNextSpaceOnBoard(n, tuple);
+
+          var child = buildTree(newBoard, tuple, depth + 1);
+          // console.log(JSON.stringify(child.matrix));
+          if ( !child.hasConflict ) {
+            board.children.push(child);
+          }
+          if ( !tuple ) {
+            break;
+          }
+        }
+        return board;
+      }
+  buildTree(r, [0,0], 0);
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };

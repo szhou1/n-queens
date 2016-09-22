@@ -3,9 +3,11 @@ describe('solvers', function() {
 
   describe('findNRooksSolution()', function() {
 
-    it('finds a valid solution for n of 3', function() {
+    xit('finds a valid solution for n of 3', function() {
       [9].map(function(n) {
         var solutionBoard = new Board(findNRooksSolution(n));
+                console.log('solution board: ' + JSON.stringify(solutionBoard));
+
         var numPieces = _.reduce(solutionBoard.rows(), function(memo, row) {
           return memo + _.reduce(row, function(memo, col) {
             return memo + col;
@@ -18,7 +20,7 @@ describe('solvers', function() {
       });
     });
 
-    it('finds a valid solution for n of 1-8', function() {
+    xit('finds a valid solution for n of 1-8', function() {
       _.range(1, 9).map(function(n) {
         var solutionBoard = new Board(findNRooksSolution(n));
         var numPieces = _.reduce(solutionBoard.rows(), function(memo, row) {
@@ -36,6 +38,14 @@ describe('solvers', function() {
   });
 
   describe('countNRooksSolutions()', function() {
+
+    it('finds the number of valid solutions for n of 1-8', function() {
+      [6].map(function(n) {
+        var solutionCount = countNRooksSolutions(n);
+
+        expect(solutionCount).to.be.equal(720);
+      });
+    });
 
     xit('finds the number of valid solutions for n of 1-8', function() {
       _.range(1, 9).map(function(n) {

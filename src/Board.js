@@ -154,21 +154,35 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      col = _.reduce(this.cols()[colIndex], function(memo, item) {
-        return memo + item;
-      }, 0);
-
-      return col > 1;
+      var matrix = this.rows();
+      var has = false;
+      for(var row=0; row<matrix.length; row++){
+        if(matrix[row][colIndex] === 1){
+          if(has){
+            return true;
+          }
+          has = true;
+        }
+      }
+      return false; // fixme
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      for (var i = 0; i < this.cols().length; i++) {
-        if (this.hasColConflictAt(i)) {
-          return true;
+      var matrix = this.rows();
+      for(var col=0; col<matrix.length; col++){
+        var has = false;
+        for(var row=0; row<matrix.length; row++){
+          if(matrix[row][col] === 1){
+            if(has){
+              return true;
+            }
+            has = true;
+          }
         }
       }
-      return false;
+
+      return false; // fixme
     },
 
 
@@ -182,7 +196,7 @@
       for(var row=0; row<matrix.length; row++){
         for(var col=0; col<matrix.length; col++){
           var diagIndex = this._getFirstRowColumnIndexForMajorDiagonalOn(row,col);
-          if(diagIndex === majorDiagonalColumnIndexAtFirstRow){
+          // if(diagIndex === majorDiagonalColumnIndexAtFirstRow){
             if(matrix[row][col] === 1){
               if(has){
                 return true;
@@ -190,7 +204,7 @@
                 has = true;
               }
             }
-          }
+          // }
         }
       }
       return false; // fixme
