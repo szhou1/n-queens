@@ -3,7 +3,6 @@
 // The only portions you need to work on are the helper functions (below)
 
 (function() {
-
   window.Board = Backbone.Model.extend({
 
     initialize: function (params) {
@@ -22,6 +21,20 @@
       return _(_.range(this.get('n'))).map(function(rowIndex) {
         return this.get(rowIndex);
       }, this);
+    },
+
+    cols: function() {
+      var matrix = this.rows();
+      columnArray = [];
+      column = [];
+      for (var j = 0; j < matrix.length; j++) {
+        for (var i = 0; i < matrix.length; i++) {
+          column.push(this.rows()[i][j]);
+        }
+        columnArray.push(column);
+        column = [];
+      }
+      return columnArray;
     },
 
     togglePiece: function(rowIndex, colIndex) {
@@ -116,38 +129,47 @@
     // --------------------------------------------------------------
     //
     // test if a specific column on this board contains a conflict
-    hasColConflictAt: function(colIndex) {
-      var matrix = this.rows();
-      var has = false;
-      for(var row=0; row<matrix.length; row++){
-        if(matrix[row][colIndex] === 1){
-          if(has){
-            return true;
-          }
-          has = true;
+    hasRowConflictAt: function(rowIndex) {
+      row = _.reduce(this.rows()[rowIndex], function(memo, item) {
+        return memo + item;
+      }, 0);
+
+      return row > 1;
+    },
+
+    // test if any rows on this board contain conflicts
+    hasAnyRowConflicts: function() {
+      for (var i = 0; i < this.rows().length; i++) {
+        if (this.hasRowConflictAt(i)) {
+          return true;
         }
       }
-      return false; // fixme
+      return false;
+    },
+
+
+
+    // COLUMNS - run from top to bottom
+    // --------------------------------------------------------------
+    //
+    // test if a specific column on this board contains a conflict
+    hasColConflictAt: function(colIndex) {
+      col = _.reduce(this.cols()[colIndex], function(memo, item) {
+        return memo + item;
+      }, 0);
+
+      return col > 1;
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      var matrix = this.rows();
-      for(var col=0; col<matrix.length; col++){
-        var has = false;
-        for(var row=0; row<matrix.length; row++){
-          if(matrix[row][col] === 1){
-            if(has){
-              return true;
-            }
-            has = true;
-          }
+      for (var i = 0; i < this.cols().length; i++) {
+        if (this.hasColConflictAt(i)) {
+          return true;
         }
       }
-
-      return false; // fixme
+      return false;
     },
-
 
 
     // Major Diagonals - go from top-left to bottom-right
