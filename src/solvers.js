@@ -24,7 +24,7 @@ window.node = function() {
 
 window.findNRooksSolution = function(n) {
   var solution = undefined; //fixme
-
+  console.log("n: " + n)
 
   var rootMatrix = [];
   for(var i=0; i<n; i++){
@@ -40,49 +40,57 @@ window.findNRooksSolution = function(n) {
 
   var buildTree = function(board, tuple, depth){
       console.log("depth: " + depth)
+      if(solution){
+        return board;
+      }
       // add 1 to tuple location
-      board.matrix[tuple[0]][tuple[1]] = 1;
-      console.log(JSON.stringify(board.matrix))
+      // board.matrix[tuple[0]][tuple[1]] = 1;
+      // console.log(JSON.stringify(board.matrix))
       // check if it has conflicts
       if(_checkForConflicts("rooks", board.matrix)){
           // if has conflicts, return
         // console.log("HAS CONFLICT");
         board.hasConflict = true;
         return board;
-      } else {
-        var newLocation = _getNextSpaceOnBoard(n, tuple);
-        while(newLocation){
-          if(depth === n){
-            console.log("SOLUTION")
-            solution = board.matrix;
-          }
+      } 
+      else if(depth === n){
+        console.log("SOLUTION")
+        console.log(JSON.stringify(board.matrix))
+        solution = board.matrix;
+        return board;
+      } 
+      else {
+        // debugger;
+        while(tuple){
           // console.log(newLocation)
           var newBoard = node();
           newBoard.matrix = _copyMatrix(board.matrix);
           // console.log()
-          var child = buildTree(newBoard, newLocation, depth + 1);
+          newBoard.matrix[tuple[0]][tuple[1]] = 1;
+          tuple = _getNextSpaceOnBoard(n, tuple);
+
+          var child = buildTree(newBoard, tuple, depth + 1);
+          console.log(JSON.stringify(child.matrix));
           if(!child.hasConflict){
             board.children.push(child);
           }
-          newLocation = _getNextSpaceOnBoard(n, newLocation);
+          if(!tuple){
+            break;
+          }
         }
       }
-
-
-      var newLocation = _getNextSpaceOnBoard(n, tuple);
-      console.log(newLocation)
-      var child = buildTree(r, newLocation, depth + 1);
-      if(!child.hasConflict) {
-        board.children.push(child);
-      }
-      // newLocation = _getNextSpaceOnBoard(n, newLocation);
-
       return board;
   }
 
+  for(var i = 0; i < n; i++) {
+    for(var j = 0; j < n; j++) {
+      console.log("buildTree: ",i, j)
+      var child = buildTree(r, [i,j], 0);
+      console.log(JSON.stringify(child.matrix));
+    }
+  }
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-var tree = buildTree(r, [0,0], 0);
-return solution;
+  return solution;
 }  
 
 window._copyMatrix = function(matrix){
@@ -106,11 +114,10 @@ window._checkForConflicts = function(criteria, board) {
 
     return hasConflict; 
 }
-
 window._getNextSpaceOnBoard = function(n, tuple) {
   var newTuple =[tuple[0],tuple[1]];
   if(tuple[0] >= n-1 && tuple[1] >= n-1){
-    return null;
+      return null;
   }
 
   if(tuple[1] >= n - 1){
