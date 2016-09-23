@@ -129,30 +129,6 @@
     // --------------------------------------------------------------
     //
     // test if a specific column on this board contains a conflict
-    hasRowConflictAt: function(rowIndex) {
-      row = _.reduce(this.rows()[rowIndex], function(memo, item) {
-        return memo + item;
-      }, 0);
-
-      return row > 1;
-    },
-
-    // test if any rows on this board contain conflicts
-    hasAnyRowConflicts: function() {
-      for (var i = 0; i < this.rows().length; i++) {
-        if (this.hasRowConflictAt(i)) {
-          return true;
-        }
-      }
-      return false;
-    },
-
-
-
-    // COLUMNS - run from top to bottom
-    // --------------------------------------------------------------
-    //
-    // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
       var matrix = this.rows();
       var has = false;
