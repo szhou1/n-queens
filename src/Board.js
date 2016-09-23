@@ -172,7 +172,6 @@
       for(var row=0; row<matrix.length; row++){
         for(var col=0; col<matrix.length; col++){
           var diagIndex = this._getFirstRowColumnIndexForMajorDiagonalOn(row,col);
-          // if(diagIndex === majorDiagonalColumnIndexAtFirstRow){
             if(matrix[row][col] === 1){
               if(has){
                 return true;
@@ -190,12 +189,10 @@
     hasAnyMajorDiagonalConflicts: function() {
       var matrix = this.rows();
       for(var row=0; row<matrix.length; row++){
-        // var has = false;
         for(var col=0; col<matrix.length; col++){
           if(matrix[row][col] === 1){
             var r = row+1;
             var c = col+1;
-            // var hasConflict = false;
             while(this._isInBounds(r, c)){
               if(matrix[r][c] === 1){
                 return true;
@@ -238,12 +235,10 @@
     hasAnyMinorDiagonalConflicts: function() {
       var matrix = this.rows();
       for(var row=0; row<matrix.length; row++){
-        // var has = false;
         for(var col=0; col<matrix.length; col++){
           if(matrix[row][col] === 1){
             var r = row+1;
             var c = col-1;
-            // var hasConflict = false;
             while(this._isInBounds(r, c)){
               if(matrix[r][c] === 1){
                 return true;

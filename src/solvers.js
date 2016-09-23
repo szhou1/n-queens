@@ -33,7 +33,6 @@ window.findNRooksSolution = function(n) {
       if ( depth === n ) {
       
         solutionMatrix = board.matrix;
-        /*return solution here or board? */
         return board;
       }
       while ( tuple ) {
@@ -43,12 +42,8 @@ window.findNRooksSolution = function(n) {
           tuple = _getNextSpaceOnBoard(n, tuple);
 
           var child = buildTree(newBoard, tuple, depth + 1);
-          // console.log(JSON.stringify(child.matrix));
           if ( !child.hasConflict ) {
             board.children.push(child);
-          }
-          if ( !tuple ) {
-            break;
           }
         }
         return board;
@@ -81,7 +76,6 @@ window.node = function() {
   var instance = {};
   instance.hasConflict = false;
   instance.matrix = null;
-  // instance.location = null;
   instance.children = [];
   return instance;
 }
@@ -89,10 +83,8 @@ window._checkForConflicts = function(criteria, board) {
     var hasConflict = false;
     var board = new Board(board);
     var criteriaList = criteria.split(" ");
-    // console.log(criteriaList)
     for(var i=0; i<criteriaList.length; i++){
       var funcName = "hasAny" + criteriaList[i] + "Conflicts";
-      // console.log(funcName)
       var conflictDetected = board[funcName]();
       hasConflict = hasConflict || conflictDetected;
       if(hasConflict) {break;}    
@@ -135,12 +127,8 @@ window.countNRooksSolutions = function(n) {
       
       if ( depth === n ) {      
         solutionMatrix = board.matrix;
-        /*return solution here or board? */
         solutionCount++;
         // console.log(solutionCount)
-        // if(solutionCount % 120 === 0){
-          // debugger;
-        // }
         return board;
       }
       while ( tuple ) {
@@ -153,9 +141,6 @@ window.countNRooksSolutions = function(n) {
           // console.log(JSON.stringify(child.matrix));
           if ( !child.hasConflict ) {
             board.children.push(child);
-          }
-          if ( !tuple ) {
-            break;
           }
         }
         return board;
@@ -194,13 +179,10 @@ window.findNQueensSolution = function(n) {
           tuple = _getNextSpaceOnBoard(n, tuple);
 
           var child = buildTree(newBoard, tuple, depth + 1);
-          // console.log(JSON.stringify(child.matrix));
           if ( !child.hasConflict ) {
             board.children.push(child);
           }
-          if ( !tuple ) {
-            break;
-          }
+
         }
         return board;
       }
@@ -215,7 +197,6 @@ window.findNQueensSolution = function(n) {
 window.countNQueensSolutions = function(n) {
   var solutionCount = 0; //fixme
 
-  // console.log("n: " + n)
   var r = node();
   r.matrix = _rootMatrix(n);
   var buildTree = function(board, tuple, depth){
@@ -232,7 +213,12 @@ window.countNQueensSolutions = function(n) {
        //    ` +JSON.stringify(board));      
         solutionMatrix = board.matrix;
         solutionCount++;
-        console.log(solutionCount);
+        var test;
+        board.matrix.forEach(function(elem) {
+          if (test) {console.log(test * elem.join(''))} 
+          test = elem.join('')
+        })
+        // console.log(solutionCount, tuple, n);
         return board;
       }
       while ( tuple ) {
@@ -242,12 +228,8 @@ window.countNQueensSolutions = function(n) {
           tuple = _getNextSpaceOnBoard(n, tuple);
 
           var child = buildTree(newBoard, tuple, depth + 1);
-          // console.log(JSON.stringify(child.matrix));
           if ( !child.hasConflict ) {
             board.children.push(child);
-          }
-          if ( !tuple ) {
-            break;
           }
         }
         return board;
